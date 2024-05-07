@@ -1,33 +1,26 @@
-#!/usr/bin/python3
 #docs https://open-meteo.com/en/docs
 import requests,datetime,math,configparser
 
 URL='https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current_weather=true'
 ROUND=datetime.timedelta(hours=+1)
 HOUR=datetime.timedelta(hours=1)
-NOW=datetime.datetime.now()
 PARTS={
   6:'Morning',
-  9:'Late morning',
+  #9:'Late morning',
   12:'Afternoon',
-  15:'Late afternoon',
+  #15:'Late afternoon',
   18:'Evening',
-  21:'Late evening',
+  #21:'Late evening',
   0:'Night',
-  3:'Late night',
+  #3:'Late night',
 }
 
-temperature=None
-
-def enbolden(text):
-  return f'\033[1m{text}\033[0m'
-                             
 def message(status,temperature,when,hours):
   p=PARTS[3*math.floor(when.hour/3)].lower()
-  return f'Will {status} to {enbolden(temperature)} at {enbolden(p)}.'
+  return f'Will {status} to {temperature} at {p}.'
 
-def predict():
-  now=NOW
+def predict(temperature):
+  now=datetime.datetime.now()
   if now.minute>=30:
     now+=ROUND
   predictions=[]
@@ -54,11 +47,11 @@ def predict():
         break
   return predictions
 
+def get():
+  json=requests.get(URL.format(location['latitude'],location['longitude'])).json()
+  temperature=round(float(json['current_weather']['temperature']))
+  return [f'Current temperature is {temperature}°.']+predict(temperature)
+  
 location=configparser.ConfigParser()
 location.read('location.ini')
 location=location['location']
-json=requests.get(URL.format(location['latitude'],location['longitude'])).json()
-temperature=round(float(json['current_weather']['temperature']))
-current=f'{temperature}°'
-output=[f'Current temperature is {enbolden(current)}.']+predict()
-print('\n'.join(output))
