@@ -1,10 +1,19 @@
 #!./venv/bin/python
-import forecast,PyQt5.QtGui,PyQt5.QtWidgets,sys
+import forecast,PyQt5.QtGui,PyQt5.QtWidgets,sys,subprocess
 
 rows=[PyQt5.QtWidgets.QAction() for i in range(5)]
 application=PyQt5.QtWidgets.QApplication([])
 icon=PyQt5.QtWidgets.QSystemTrayIcon()
 menu=PyQt5.QtWidgets.QMenu()
+
+notified=False
+
+def notify(message):
+  global notified
+  if message==notified:
+    return
+  subprocess.run(['notify-send','Weather update',message])
+  notified=message
 
 def update():
   for r in rows[:-1]:
@@ -15,7 +24,9 @@ def update():
     r=rows[i]
     r.setText(results[i])
     r.setVisible(True)
-  icon.setToolTip(results[1] if nresults>1 else results[0])
+  r=results[1] if nresults>1 else results[0]
+  icon.setToolTip(r)
+  notify(r)
 
 icon.setIcon(PyQt5.QtGui.QIcon(f"{'/'.join(sys.argv[0].split('/')[:-1])}/icon.webp"))
 application.setQuitOnLastWindowClosed(False) 
