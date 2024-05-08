@@ -6,17 +6,13 @@ ROUND=datetime.timedelta(hours=+1)
 HOUR=datetime.timedelta(hours=1)
 PARTS={
   6:'Morning',
-  #9:'Late morning',
   12:'Afternoon',
-  #15:'Late afternoon',
   18:'Evening',
-  #21:'Late evening',
   0:'Night',
-  #3:'Late night',
 }
 
 def message(status,temperature,when,hours):
-  p=PARTS[3*math.floor(when.hour/3)].lower()
+  p=PARTS[6*math.floor(when.hour/6)].lower()
   return f'Will {status} to {temperature} at {p}.'
 
 def predict(temperature):
@@ -32,7 +28,7 @@ def predict(temperature):
       t+=1
       if temperature<30 and t>=30 and len(predictions)==0:
         hours=t-temperature
-        predictions.append(message('raise','30°',when,hours))
+        predictions.append(message('rise','30°',when,hours))
   targets=[target for target in [30,20] if target<t]
   for t in range(t,20,-1):
     when+=HOUR

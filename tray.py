@@ -1,7 +1,7 @@
 #!./venv/bin/python
 import forecast,PyQt5.QtGui,PyQt5.QtWidgets,sys
 
-rows=[PyQt5.QtWidgets.QAction() for i in range(4)]
+rows=[PyQt5.QtWidgets.QAction() for i in range(5)]
 application=PyQt5.QtWidgets.QApplication([])
 icon=PyQt5.QtWidgets.QSystemTrayIcon()
 menu=PyQt5.QtWidgets.QMenu()
