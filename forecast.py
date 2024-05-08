@@ -13,7 +13,7 @@ PARTS={
 
 def message(status,temperature,when,hours):
   p=PARTS[6*math.floor(when.hour/6)].lower()
-  return f'Will {status} to {temperature} at {p}.'
+  return f'Will {status} to {temperature} in the {p}.'
 
 def predict(temperature):
   now=datetime.datetime.now()
