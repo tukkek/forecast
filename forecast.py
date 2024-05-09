@@ -1,5 +1,5 @@
-#docs https://open-meteo.com/en/docs
-import requests,datetime,math,configparser
+#!./venv/bin/python
+import requests,datetime,math,configparser,simple_tray.tray,PyQt5.QtWidgets
 
 URL='https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current_weather=true'
 ROUND=datetime.timedelta(hours=+1)
@@ -47,7 +47,24 @@ def get():
   json=requests.get(URL.format(location['latitude'],location['longitude'])).json()
   temperature=round(float(json['current_weather']['temperature']))
   return [f'Current temperature is {temperature}°.']+predict(temperature)
+
+class Tray(simple_tray.tray.Tray):
+  def update(self):
+    for r in self.rows:
+      r.setVisible(False)
+    results=get()
+    nresults=len(results)
+    for i in range(nresults):
+      r=self.rows[i]
+      r.setText(results[i])
+      r.setVisible(True)
+    self.say(results[1] if nresults>1 else results[0])
   
 location=configparser.ConfigParser()
 location.read('location.ini')
 location=location['location']
+t=Tray('Weacher forecast',"icon.webp",10*60)
+t.rows=[PyQt5.QtWidgets.QAction() for i in range(4)]
+for r in t.rows:
+  t.menu.addAction(r)
+t.start()
