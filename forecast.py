@@ -1,5 +1,5 @@
 #!./venv/bin/python
-import requests,datetime,math,configparser,simple_tray.tray,PyQt5.QtWidgets
+import requests,datetime,math,configparser,simple_tray.tray,PyQt6.QtGui
 
 URL='https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current_weather=true'
 ROUND=datetime.timedelta(hours=+1)
@@ -64,7 +64,7 @@ location=configparser.ConfigParser()
 location.read('location.ini')
 location=location['location']
 t=Tray('Weacher forecast',"icon.webp",10*60)
-t.rows=[PyQt5.QtWidgets.QAction() for i in range(4)]
+t.rows=[PyQt6.QtGui.QAction() for i in range(4)]
 for r in t.rows:
   t.menu.addAction(r)
 t.start()
