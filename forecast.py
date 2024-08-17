@@ -1,4 +1,4 @@
-#!./venv/bin/python
+#!.venv/bin/python
 import requests,datetime,math,configparser,simple_tray.tray,PyQt6.QtGui
 
 URL='https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current_weather=true'
