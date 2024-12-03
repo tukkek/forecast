@@ -23,7 +23,7 @@ class Tray(simple_tray.tray.Tray):
       r.setVisible(True)
     self.say(results[1] if nresults>1 else results[0])
 
-def message(status,temperature,when,hours):
+def message(status,temperature,when):
   p=PARTS[6*math.floor(when.hour/6)].lower()
   return f'Will {status} to {temperature} in the {p}.'
 
@@ -39,19 +39,16 @@ def predict(temperature):#TODO should be a class
       when+=HOUR
       t+=1
       if temperature<30 and t>=30 and len(predictions)==0:
-        hours=t-temperature
-        predictions.append(message('rise','30°',when,hours))
-  predictions.append(message('peak',f'{t}°',when,hours))
+        predictions.append(message('rise','30°',when))
+  predictions.append(message('peak',f'{t}°',when))
   targets=[target for target in [30,20] if target<t]
   while when.hour!=6:
     when+=HOUR
     t-=1
     if len(targets)>0 and t<=targets[0]:
-      hours=when-now
-      hours=hours.seconds/(60*60)
-      predictions.append(message('drop',f'{t}°',when,hours))
+      predictions.append(message('drop',f'{t}°',when))
       targets.pop(0)
-  predictions.append(message('floor',f'{t}°',when,hours))
+  predictions.append(message('floor',f'{t}°',when))
   return predictions
 
 def get():
