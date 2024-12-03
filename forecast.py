@@ -27,7 +27,7 @@ def message(status,temperature,when,hours):
   p=PARTS[6*math.floor(when.hour/6)].lower()
   return f'Will {status} to {temperature} in the {p}.'
 
-def predict(temperature):
+def predict(temperature):#TODO should be a class
   now=datetime.datetime.now()
   if now.minute>=30:
     now+=ROUND
@@ -41,18 +41,17 @@ def predict(temperature):
       if temperature<30 and t>=30 and len(predictions)==0:
         hours=t-temperature
         predictions.append(message('rise','30°',when,hours))
+  predictions.append(message('peak',f'{t}°',when,hours))
   targets=[target for target in [30,20] if target<t]
-  for t in range(t,20,-1):
+  while when.hour!=6:
     when+=HOUR
-    target=targets[0]
     t-=1
-    if t<=target or when.hour==6:
+    if len(targets)>0 and t<=targets[0]:
       hours=when-now
       hours=hours.seconds/(60*60)
       predictions.append(message('drop',f'{t}°',when,hours))
       targets.pop(0)
-      if len(targets)==0:
-        break
+  predictions.append(message('floor',f'{t}°',when,hours))
   return predictions
 
 def get():
@@ -64,7 +63,7 @@ location=configparser.ConfigParser()
 location.read('location.ini')
 location=location['location']
 t=Tray('Weacher forecast',"icon.webp",10*60)
-t.rows=[PyQt6.QtGui.QAction() for i in range(4)]
+t.rows=[PyQt6.QtGui.QAction() for i in range(6)]
 for r in t.rows:
   t.menu.addAction(r)
 t.start()
