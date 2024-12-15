@@ -40,7 +40,8 @@ def predict(temperature):#TODO should be a class
       t+=1
       if temperature<30 and t>=30 and len(predictions)==0:
         predictions.append(message('rise','30°',when))
-  predictions.append(message('peak',f'{t}°',when))
+    if now.hour<16:
+      predictions.append(message('peak',f'{t}°',when))
   targets=[target for target in [30,20] if target<t]
   while when.hour!=6:
     when+=HOUR
