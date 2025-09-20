@@ -6,7 +6,7 @@ ROUND=datetime.timedelta(hours=+1)
 HOUR=datetime.timedelta(hours=1)
 PARTS={
   6:'Morning',
-  12:'Afternoon',
+  12:'Day',
   18:'Evening',
   0:'Night',
 }
